@@ -135,10 +135,13 @@ dependencies {
 }
 
 afterEvaluate {
-    tasks.register("makeLibs", Copy::class.java) {
+    tasks.register("makeLibs", Zip::class.java) {
+        archiveBaseName = "love"
+        entryCompression = ZipEntryCompression.DEFLATED
+        destinationDirectory = File(project.buildDir, "libs")
         val externalNativeBuild = tasks.named<ExternalNativeBuildTask>("externalNativeBuildNormalRelease")
         dependsOn += externalNativeBuild
-        from(externalNativeBuild.flatMap { it.soFolder })
-        destinationDir = File(project.buildDir, "libs")
+        from(fileTree(externalNativeBuild.flatMap { it.soFolder }))
+
     }
 }
